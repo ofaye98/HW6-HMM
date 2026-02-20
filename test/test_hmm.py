@@ -48,12 +48,26 @@ def test_mini_weather():
     assert all(state in mini_hmm_model.hidden_states for state in predicted_viterbi_path), "All states in output of viterbi algorithm should be valid hidden states in the model"
     assert np.array_equal(predicted_viterbi_path, expected), f"Output of viterbi algorithm should be {expected}, but got {predicted_viterbi_path}"
 
-    # raise value error if input to forward algorithm is not a numpy array
+    # edge case 1 - raise ValueError if inputs are not a numpy array
     with pytest.raises(ValueError):
-        mini_hmm_model.forward([0, 1, 2]) # input is not a numpy array 
-    # raise value error if input to viterbi algorithm is not a numpy array
+        mini_hmm_model.forward([0, 1, 2]) 
+    
     with pytest.raises(ValueError):
-        mini_hmm_model.viterbi([0, 1, 2]) # input is not a numpy array
+        mini_hmm_model.viterbi([0, 1, 2]) 
+    
+    # edge case 2 - raise ValueError for empty observation sequence
+    with pytest.raises(ValueError):
+        mini_hmm_model.forward(np.array([]))
+    
+    with pytest.raises(ValueError):
+        mini_hmm_model.viterbi(np.array([]))
+    
+    # edge case 3 - raise ValueError for unknown observation state
+    with pytest.raises(ValueError):
+        mini_hmm_model.forward(np.array(['sunny', 'with_a_chance_of_meatballs']))
+    
+    with pytest.raises(ValueError):
+        mini_hmm_model.viterbi(np.array(['rainy', 'hella_dry']))
 
     
 
@@ -99,12 +113,27 @@ def test_full_weather():
     assert all(state in full_hmm_model.hidden_states for state in predicted_viterbi_path), "All states in output of viterbi algorithm should be valid hidden states in the model"
     assert np.array_equal(predicted_viterbi_path, expected), f"Output of viterbi algorithm should be {expected}, but got {predicted_viterbi_path}"
 
-    # raise value error if input to forward algorithm is not a numpy array
+    # edge case tests similar to mini weather
+    # edge case 1 - raise ValueError if input to forward algorithm is not a numpy array
     with pytest.raises(ValueError):
-        full_hmm_model.forward([0, 1, 2]) # input is not a numpy array
-    # raise value error if input to viterbi algorithm is not a numpy array
+        full_hmm_model.forward([0, 1, 2]) 
+    
     with pytest.raises(ValueError):
-        full_hmm_model.viterbi([0, 1, 2]) # input is not a numpy array
+        full_hmm_model.viterbi([0, 1, 2]) 
+    
+    # edge case 2 - raise ValueError for empty observation sequence
+    with pytest.raises(ValueError):
+        full_hmm_model.forward(np.array([]))
+    
+    with pytest.raises(ValueError):
+        full_hmm_model.viterbi(np.array([]))
+
+    # edge case 3 - raise ValueError for unknown observation state
+    with pytest.raises(ValueError):
+        full_hmm_model.forward(np.array(['sunny', 'with_a_chance_of_meatballs']))  
+    
+    with pytest.raises(ValueError):
+        full_hmm_model.viterbi(np.array(['rainy', 'hella_dry']))
 
 
 
