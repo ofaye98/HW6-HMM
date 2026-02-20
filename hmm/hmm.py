@@ -41,12 +41,20 @@ class HiddenMarkovModel:
             forward_probability (float): forward probability (likelihood) for the input observed sequence  
         """        
         
-        # Validate input
+        # validate input
         if not isinstance(input_observation_states, np.ndarray):
             raise ValueError("Input must be a numpy array")
         
-        # Step 1. Initialize variables
+        # edge case 1 - check for empty sequence
+        if len(input_observation_states) == 0:
+            raise ValueError("Input observation sequence cannot be empty")
         
+        # edge case 2 - check all observations are valid
+        for obs in input_observation_states:
+            if obs not in self.observation_states_dict:
+                raise ValueError(f"Unknown observation state: {obs}. Valid states are: {list(self.observation_states)}")
+        
+        # Step 1. Initialize variables
         # create a table to store forward probabilities: rows = time steps, columns = hidden states
         forward_table = np.zeros((len(input_observation_states), len(self.hidden_states)))
         
@@ -55,7 +63,6 @@ class HiddenMarkovModel:
             obs_index = self.observation_states_dict[input_observation_states[0]] # get index of first observed state in observation states dictionary
             forward_table[0, i] = self.prior_p[i] * self.emission_p[i, obs_index] # prior probability of hidden state i * emission probability for hidden state i emitting the first observed state
 
-       
         # Step 2. Calculate probabilities
         for t in range(1, len(input_observation_states)): # for each time step starting from the second time step
             for j in range(len(self.hidden_states)): # for each hidden state at time t
@@ -83,9 +90,18 @@ class HiddenMarkovModel:
             best_hidden_state_sequence(list): most likely list of hidden states that generated the sequence observed states
         """        
         
-        # Validate input
+        # validate input
         if not isinstance(decode_observation_states, np.ndarray):
             raise ValueError("Input must be a numpy array")
+        
+        # edge case 1 - check for empty sequence
+        if len(decode_observation_states) == 0:
+            raise ValueError("Input observation sequence cannot be empty")
+        
+        # edge case 2 - check all observations are valid
+        for obs in decode_observation_states:
+            if obs not in self.observation_states_dict:
+                raise ValueError(f"Unknown observation state: {obs}. Valid states are: {list(self.observation_states)}")
         
         # Step 1. Initialize variables
         viterbi_table = np.zeros((len(decode_observation_states), len(self.hidden_states))) # for storing probabilities of hidden state at each step 
@@ -111,7 +127,7 @@ class HiddenMarkovModel:
                         max_state_index = i # update index of hidden state at time t-1 that gives max probability
                 viterbi_table[t, j] = max_prob # store max probability in viterbi table
                 best_path[t, j] = max_state_index # store index of best previous state for state j at time t
-
+        
         # Step 4. Return best hidden state sequence 
         best_hidden_state_sequence = [] # list to store best hidden state sequence
         current_state = np.argmax(viterbi_table[-1, :]) # get index of hidden state with highest probability at final time step
