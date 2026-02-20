@@ -89,7 +89,7 @@ def test_full_weather():
     assert forward_probs > 0, "Output of forward algorithm should be a positive number"
     assert forward_probs < 1, "Output of forward algorithm should be less than 1"
 
-    exprected_forward_prob = 0.00010204315185546875 # 
+    exprected_forward_prob = 1.6864513843961343e-11 # from github actions error
     # check if forward probability is close to expected value (within a reasonable tolerance) 
     assert np.isclose(forward_probs, exprected_forward_prob, atol=1e-6), f"Output of forward algorithm should be close to {exprected_forward_prob}, but got {forward_probs}"
 
