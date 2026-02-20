@@ -41,6 +41,10 @@ class HiddenMarkovModel:
             forward_probability (float): forward probability (likelihood) for the input observed sequence  
         """        
         
+        # Validate input
+        if not isinstance(input_observation_states, np.ndarray):
+            raise ValueError("Input must be a numpy array")
+        
         # Step 1. Initialize variables
         
         # create a table to store forward probabilities: rows = time steps, columns = hidden states
@@ -79,9 +83,13 @@ class HiddenMarkovModel:
             best_hidden_state_sequence(list): most likely list of hidden states that generated the sequence observed states
         """        
         
+        # Validate input
+        if not isinstance(decode_observation_states, np.ndarray):
+            raise ValueError("Input must be a numpy array")
+        
         # Step 1. Initialize variables
         viterbi_table = np.zeros((len(decode_observation_states), len(self.hidden_states))) # for storing probabilities of hidden state at each step 
-        best_path = np.zeros(len(decode_observation_states))  # for storing index of best hidden state    
+        best_path = np.zeros((len(decode_observation_states), len(self.hidden_states)), dtype=int)  # for storing index of best previous hidden state    
         
        
        # Step 2. Calculate Probabilities
@@ -102,15 +110,15 @@ class HiddenMarkovModel:
                         max_prob = prob # update max probability
                         max_state_index = i # update index of hidden state at time t-1 that gives max probability
                 viterbi_table[t, j] = max_prob # store max probability in viterbi table
-                best_path[t] = max_state_index # store index in best path table
+                best_path[t, j] = max_state_index # store index of best previous state for state j at time t
 
         # Step 4. Return best hidden state sequence 
         best_hidden_state_sequence = [] # list to store best hidden state sequence
         current_state = np.argmax(viterbi_table[-1, :]) # get index of hidden state with highest probability at final time step
         best_hidden_state_sequence.append(current_state) # add index of hidden state at final time step to best hidden state sequence
-        for t in reversed(range(len(decode_observation_states) - 1)): # iterate backwards through time steps to get best hidden state sequence
-            current_state = int(best_path[t + 1]) # set to index that gives max probability for hidden state at time t+1
-            best_hidden_state_sequence.append(current_state) # add index of hidden state at time t to best hidden state sequence
+        for t in reversed(range(1, len(decode_observation_states))): # iterate backwards through time steps to get best hidden state sequence
+            current_state = int(best_path[t, current_state]) # get index of previous state that led to current state
+            best_hidden_state_sequence.append(current_state) # add index of hidden state 
         best_hidden_state_sequence.reverse() # reverse best hidden state sequence to get correct order
         best_hidden_state_sequence = [self.hidden_states[int(idx)] for idx in best_hidden_state_sequence] # convert indices to hidden state names (to match expected output format)
         return best_hidden_state_sequence
