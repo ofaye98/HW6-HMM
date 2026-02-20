@@ -46,7 +46,7 @@ def test_mini_weather():
     assert isinstance(predicted_viterbi_path, list), "Output of viterbi algorithm should be a list"
     assert len(predicted_viterbi_path) == len(obs_sequence), "Output of viterbi algorithm should have the same number of states as the input observation sequence"
     assert all(state in mini_hmm_model.hidden_states for state in predicted_viterbi_path), "All states in output of viterbi algorithm should be valid hidden states in the model"
-    assert predicted_viterbi_path == expected, f"Output of viterbi algorithm should be {expected}, but got {predicted_viterbi_path}"
+    assert np.array_equal(predicted_viterbi_path, expected), f"Output of viterbi algorithm should be {expected}, but got {predicted_viterbi_path}"
 
     # raise value error if input to forward algorithm is not a numpy array
     with pytest.raises(ValueError):
@@ -89,11 +89,15 @@ def test_full_weather():
     assert forward_probs > 0, "Output of forward algorithm should be a positive number"
     assert forward_probs < 1, "Output of forward algorithm should be less than 1"
 
+    exprected_forward_prob = 0.00010204315185546875 # 
+    # check if forward probability is close to expected value (within a reasonable tolerance) 
+    assert np.isclose(forward_probs, exprected_forward_prob, atol=1e-6), f"Output of forward algorithm should be close to {exprected_forward_prob}, but got {forward_probs}"
+
     predicted_viterbi_path = full_hmm_model.viterbi(obs_sequence) # run viterbi algorithm to get predicted hidden state sequence
     assert isinstance(predicted_viterbi_path, list), "Output of viterbi algorithm should be a list"
     assert len(predicted_viterbi_path) == len(obs_sequence), "Output of viterbi algorithm should have the same number of states as the input observation sequence"
     assert all(state in full_hmm_model.hidden_states for state in predicted_viterbi_path), "All states in output of viterbi algorithm should be valid hidden states in the model"
-    assert predicted_viterbi_path == expected, f"Output of viterbi algorithm should be {expected}, but got {predicted_viterbi_path}"
+    assert np.array_equal(predicted_viterbi_path, expected), f"Output of viterbi algorithm should be {expected}, but got {predicted_viterbi_path}"
 
     # raise value error if input to forward algorithm is not a numpy array
     with pytest.raises(ValueError):
