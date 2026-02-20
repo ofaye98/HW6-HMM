@@ -1,7 +1,23 @@
+[![tests](https://github.com/ofaye98/HW6-HMM/actions/workflows/tests.yml/badge.svg)](https://github.com/ofaye98/HW6-HMM/actions/workflows/tests.yml)
 # HW6-HMM
 
 In this assignment, you'll implement the Forward and Viterbi Algorithms (dynamic programming). 
 
+## Description of Methods
+For general understanding of the algorithm I referenced these websites (and the class powerpoint, and my class notes):
+* https://www.youtube.com/watch?v=RWkHJnFj5rY - explains basic hmm
+* https://www.youtube.com/watch?v=9-sPm4CfcD0 - explains forward algo
+* https://www.youtube.com/watch?v=LGY4yMWUjL4 - explains viterbi algo
+
+For forward method I used these websites:
+* https://www.geeksforgeeks.org/machine-learning/hidden-markov-model-in-machine-learning/ - explains both forward and viterbi logic with python example
+* https://github.com/AzharuddinKazi/Forward-Algorithm-HMM/blob/master/Forward_Algorithm_HMM.py - python example of forward algo, helped with understanding how to fill in probability matrices
+
+For viterbi method I used these websites:
+* https://www.geeksforgeeks.org/artificial-intelligence/viterbi-algorithm-for-hidden-markov-models-hmms/ - explains viterbi with an easy example in python 
+* https://www.audiolabs-erlangen.de/resources/MIR/FMP/C5/C5S3_Viterbi.html - helpful to understand finding max prob and backtracking
+
+Used chatgpt and VS code llm for debugging and brainstorming test cases.
 
 # Assignment
 
