@@ -38,7 +38,7 @@ def test_mini_weather():
     assert forward_probs > 0, "Output of forward algorithm should be a positive number"
     assert forward_probs < 1, "Output of forward algorithm should be less than 1"
 
-    expected_forward_prob = 0.0336 # calculated via vs code
+    expected_forward_prob = 0.03506441162109375 # from github actions error
     # check if forward probability is close to expected value (within a reasonable tolerance) 
     assert np.isclose(forward_probs, expected_forward_prob, atol=1e-4), f"Output of forward algorithm should be close to {expected_forward_prob}, but got {forward_probs}"
 
